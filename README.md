@@ -1,4 +1,4 @@
-# GWfinal
+# WIT
 
 Classify 1 s LIGO strain windows (H1 / L1, O3a) as **background, glitch, signal or blip**, using the strain
 together with auxiliary witness channels, and measure what the witness channels add (with vs. without witness).
@@ -6,24 +6,23 @@ together with auxiliary witness channels, and measure what the witness channels 
 ## Layout
 
 ```
-data_pipeline/            build the datasets: triggers -> whitened HDF5 files in auto_data/<DET>/
+data_pipeline/            build the datasets: triggers -> whitened HDF5 files in data_dir/<DET>/
 dataset/                  waveform / injection helpers used by the signal and blip injections
 models/supervised_model/
   config.yaml             experiment settings (model, data, training, evaluation)
   run_experiment.py       train both variants, evaluate, plot, compare efficiency vs deadtime
   experiment_setup.py     shared config / data / checkpoint helpers
   main_model/             main model (separate strain + witness encoders, Mamba)
-  downsample_model/       downsample model
+  downsample_model/       downsample model (downsamle convolution + Mamba, fast for testing new configs)
   train_utils/            loader, losses, evaluate, visualize, compare_efficiency
 ```
 
 ## Setup
 
 ```
-pip install torch --index-url https://download.pytorch.org/whl/cu126   # match your CUDA version
+pip install torch --index-url https://download.pytorch.org/whl/cu126  
 pip install -r requirements.txt
 ```
-
 `mamba-ssm` needs Linux and an NVIDIA GPU.
 
 ## Data
@@ -34,13 +33,13 @@ Place them relative to the repo root:
 
 | What | Where |
 |---|---|
-| strain (GWOSC HDF5) | `data/og/` |
+| strain (GWOSC HDF5) | `data/strain_data/` |
 | witness channels | `data/witness_data/` |
 | Omicron triggers | `triggers_H1/`, `triggers_L1/` |
 | generated datasets (`whitened_*.h5`, `all_test_glitches.h5`, CSVs) | `auto_data/H1/`, `auto_data/L1/` |
 
 If you download the generated datasets you can skip the pipeline and go straight to training.
-Set `data.data_dir` in `models/supervised_model/config.yaml` to your `auto_data` folder (`null` = `GWfinal/auto_data`).
+Set `data.data_dir` in `models/supervised_model/config.yaml` to your `data_dir` folder .
 
 ## Build the datasets
 
@@ -50,7 +49,7 @@ python run_pipeline.py --detectors H1 L1 --steps all       # or a subset, e.g. -
 ```
 
 Steps, in order: `bg_triggers, coincidence, background, leakage, glitches, long_glitches, test_glitches,
-signal, blip`, then `dataset_stats.py`. Output goes to `auto_data/<DET>/` (`--out` to change it).
+signal, blip`, then `dataset_stats.py`. Output goes to `data_dir/<DET>/` (`--out` to change it).
 `test_glitches` extracts every SNR >= 7 strain trigger after the test cutoff (`all_test_glitches.h5`),
 used as the glitch population for the efficiency vs deadtime curves.
 
