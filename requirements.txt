@@ -1,0 +1,24 @@
+# Python packages for data_pipeline/, dataset/ and models/.  pip install -r requirements.txt
+# Lower bounds are the versions this code was checked with; for exact pins use `pip freeze` on the cluster env.
+
+# Install torch first with the CUDA build matching the machine (https://pytorch.org/get-started/locally/)
+torch>=2.7
+lightning>=2.6
+# Mamba layers (models/supervised_model/*/model.py); Linux + NVIDIA GPU only, needs torch already installed
+mamba-ssm
+
+# Gravitational-wave tools: whitening, PSDs, waveforms (ml4gw), resampling (gwpy)
+ml4gw>=0.8
+gwpy>=4.0
+
+numpy>=1.26
+scipy>=1.15
+pandas>=2.2
+h5py>=3.12
+scikit-learn>=1.6
+matplotlib>=3.10
+PyYAML>=6.0
+tqdm>=4.66
+
+# Optional: only with training.wandb: true in models/supervised_model/config.yaml
+wandb>=0.23

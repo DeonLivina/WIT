@@ -1,0 +1,39 @@
+experiment:
+  name: downsample_witness_ablation   # outputs go to runs/<name>/
+  model: main                         # main | downsample
+  variants: [with_witness, without_witness]
+  seed: 42
+  retrain: false                      # false: reuse runs/<name>/<variant>/checkpoints/best.ckpt if it exists
+
+data:
+  data_dir: /home/deonf/big_model/auto_data   # null: GWfinal/auto_data (or $GW_OUT_ROOT)
+  one_detector_only: true             # true: strain + the primary detector's 5 witnesses only
+  train_frac: 0.7333                  # test gets 1 - train_frac - val_frac
+  val_frac: 0.1
+  test_cutoff_utc: "2019-05-05 00:00:00"   # everything from here on is forced into test
+
+training:
+  batch_size: 32
+  lr: 0.001
+  epochs: 15
+  patience: 12
+  gradient_clip: 1.0
+  wandb: false
+
+model:
+  d_model: 32
+  mamba_layers: 4
+  proj_dim: 8
+
+loss:
+  temperature: 0.1
+  supcon_weight: 0.05
+  witness_supcon_weight: 0.05
+  witness_label: detector             # detector | class
+
+evaluation:
+  split: test
+  max_deadtime: 0.10
+  snr_bins: 5                         # 0 to skip the per-SNR-bin efficiency plot
+  population_glitches: true           # efficiency vs deadtime on auto_data/<DET>/all_test_glitches.h5 (every
+                                      # test-period glitch, from extract_test_glitches.py) instead of the split's glitches
