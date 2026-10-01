@@ -15,8 +15,8 @@ models/supervised_model/
   main_model/             main model (separate strain + witness encoders, Mamba)
   downsample_model/       downsample model (downsamle convolution + Mamba, fast for testing new configs)
   train_utils/            loader, losses, evaluate, visualize, compare_efficiency
-```
 
+```
 ## Setup
 
 ```
@@ -36,7 +36,7 @@ Place them relative to the repo root:
 | strain (GWOSC HDF5) | `data/strain_data/` |
 | witness channels | `data/witness_data/` |
 | Omicron triggers | `triggers_H1/`, `triggers_L1/` |
-| generated datasets (`whitened_*.h5`, `all_test_glitches.h5`, CSVs) | `auto_data/H1/`, `auto_data/L1/` |
+| generated datasets (`whitened_*.h5`, CSVs) | `auto_data/H1/`, `auto_data/L1/` |
 
 If you download the generated datasets you can skip the pipeline and go straight to training.
 Set `data.data_dir` in `models/supervised_model/config.yaml` to your `data_dir` folder .
